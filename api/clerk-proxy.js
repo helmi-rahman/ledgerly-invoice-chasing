@@ -14,6 +14,10 @@ export default async function handler(request, response) {
   }
 
   if (!headers.has("origin")) headers.set("Origin", `${protocol}://${host}`);
+  const forwardedFor = headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+    || headers.get("x-real-ip")?.trim()
+    || headers.get("cf-connecting-ip")?.trim();
+  if (forwardedFor) headers.set("X-Forwarded-For", forwardedFor);
   let body;
   if (!["GET", "HEAD"].includes(request.method)) {
     const parsedBody = request.body;
