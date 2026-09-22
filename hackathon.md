@@ -67,7 +67,7 @@ The documented Firecrawl v2 seam is `POST https://api.firecrawl.dev/v2/search` w
 - Current implementation is **AgentMail-heavy**: outbound reminders and inbound signed webhook processing are core product paths. Collections Risk Radar is now a proposed Firecrawl scope addition; it is not implemented or live-verified yet.
 
 - The project is **not publicly deployed**. No public frontend URL or Convex cloud deployment URL is recorded in the workspace.
-- The project directory has no Git repository, so commit-level chronology cannot be recovered from local history.
+- The local verification baseline is now reproducible: `npx tsc --noEmit` passed with no errors; `npm run test:once` passed with 4 files and 29 tests; `npm run build` passed with the Vite production bundle; and `CONVEX_AGENT_MODE=anonymous npx convex dev --once` reported Convex functions ready at the local anonymous deployment. The local Convex run used no Convex account and is not a production-deployment claim.
 - Production use still requires Clerk configuration, a Convex deployment auth issuer/JWT template, hosting environment variables, AgentMail/Svix configuration, provider credentials, and authenticated live end-to-end verification.
 - Deterministic local previews are the current safe baseline. Provider-backed AI and outbound email are optional runtime paths and must not be treated as live merely because their code exists.
 - This file is an evidence-based build log, not a deployment or hackathon-submission claim.
