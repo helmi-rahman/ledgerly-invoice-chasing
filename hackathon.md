@@ -12,7 +12,7 @@
 - **Auth:** Clerk production path with a local JWT development gate
 - **AI models:** gpt-4o-mini optional provider path; deterministic local fallback
 - **Started:** 2026-08-29T02:20:31Z
-- **Last updated:** 2026-08-29T18:52:35Z
+- **Last updated:** 2026-09-22T00:42:00Z
 - **Build-log rule:** update this file after each meaningful implementation or verification milestone; mark proposed, implemented, live-verified, and blocked work separately.
 
 ## Log
