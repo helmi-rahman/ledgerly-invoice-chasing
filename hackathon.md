@@ -4,16 +4,16 @@
 - **Event:** Convex All Gas Hackathon
 - **What it does:** Ledgerly turns unpaid invoices into controlled, evidence-backed follow-up—without letting an AI send money-related emails unchecked.
 - **Submission description:** Ledgerly is an authenticated accounts-receivable workspace for small teams. Create and track invoices, see overdue exposure and account health, generate deterministic payment-chase drafts in different tones, classify inbound replies, and require explicit approval before any reminder is sent. Convex handles the live backend and tenant isolation; Clerk secures access; provider-backed email is an optional final step rather than an autonomous default.
-- **Live app:** not deployed
+- **Live app:** https://invoice-chasing.vercel.app
 - **Repo:** https://github.com/helmi-rahman/ledgerly-invoice-chasing
-- **Frontend:** not deployed
-- **Convex deployment:** https://quiet-orca-611.convex.cloud (production backend deployed; authenticated frontend flow pending)
+- **Frontend:** Vite/React production deployment on Vercel; authenticated dashboard verified live
+- **Convex deployment:** https://necessary-mammoth-771.convex.cloud (production backend deployed and authenticated access verified)
 - **Components:** none
 - **Convex features:** schema, tables, indexes, queries, mutations, actions, HTTP actions, realtime subscriptions
-- **Auth:** Clerk production path with a local JWT development gate
+- **Auth:** Clerk production path with Convex JWT template `convex`; local JWT development gate retained
 - **AI models:** gpt-4o-mini optional provider path; deterministic local fallback
 - **Started:** 2026-08-29T02:20:31Z
-- **Last updated:** 2026-09-22T00:42:00Z
+- **Last updated:** 2026-09-22T14:55:00Z
 - **Build-log rule:** update this file after each meaningful implementation or verification milestone; mark proposed, implemented, live-verified, and blocked work separately.
 
 ## Log
@@ -67,9 +67,8 @@ The documented Firecrawl v2 seam is `POST https://api.firecrawl.dev/v2/search` w
 
 - Current implementation is **AgentMail-heavy**: outbound reminders and inbound signed webhook processing are core product paths. Collections Risk Radar has deterministic backend/frontend paths implemented and locally verified; Firecrawl-backed evidence retrieval remains optional and is not live-verified.
 
-- The production Convex backend is deployed at `https://quiet-orca-611.convex.cloud`. The public frontend is not deployed yet, and authenticated production end-to-end verification remains pending.
-- The local verification baseline is reproducible: `npx tsc --noEmit` passed with no errors; `npm run test:once` passed with 4 files and 29 tests; `npm run build` passed with the Vite production bundle; and `CONVEX_AGENT_MODE=anonymous npx convex dev --once` reported Convex functions ready at the local anonymous deployment. The local Convex run used no Convex account and is not a production-deployment claim.
-- Production use still requires Clerk configuration, hosting environment variables, AgentMail/Svix configuration, provider credentials, and authenticated live end-to-end verification.
+- The production Convex backend is deployed at `https://necessary-mammoth-771.convex.cloud`, and the public frontend is live at `https://invoice-chasing.vercel.app`. Clerk sign-in, verification-code authentication, Convex JWT validation, invoice creation, invoice editing, live updates, deterministic chase previews, and reply-intent classification have been verified in production.
+- AgentMail outbound delivery is not yet live: Production Convex still requires `AGENTMAIL_API_KEY` and `AGENTMAIL_INBOX_ID`. Inbound reply processing additionally requires `AGENTMAIL_WEBHOOK_SECRET` and webhook configuration. Do not describe real reminder delivery as verified until those variables are configured and a test email is confirmed.
 - Deterministic local previews are the current safe baseline. Provider-backed AI and outbound email are optional runtime paths and must not be treated as live merely because their code exists.
 - This file is an evidence-based build log, not a hackathon-submission claim.
 
@@ -77,4 +76,7 @@ The documented Firecrawl v2 seam is `POST https://api.firecrawl.dev/v2/search` w
 The local Convex push initially exposed a missing `@types/node` dependency for the `RISK_RADAR_ALLOWED_HOSTS` environment-variable access in `convex/riskRadar.ts` and its tests. Added the development type dependency and declared Node types in `convex/tsconfig.json`. Verified that `CONVEX_AGENT_MODE=anonymous npx convex dev --once` now completes with `Convex functions ready`, all 29 tests pass, and the production Vite build passes. Exercised the live local `riskRadar:dashboard` HTTP endpoint and confirmed unauthenticated access is rejected by the backend; no production deployment or external Firecrawl call was claimed.
 
 ### 2026-09-22 - Convex production deployment
-Linked the project to Convex account `helmiabdm`, created production deployment `helmiabdm:ledgerly-invoice-chasing:production`, and deployed the verified backend to `https://quiet-orca-611.convex.cloud`. Production function-spec readback succeeded and included Risk Radar functions. Temporary deploy keys used for deployment and verification were removed afterward. Clerk, frontend hosting, AgentMail/Svix configuration and authenticated production verification remain pending.
+Linked the project to Convex account `helmiabdm`, created production deployment `helmiabdm:ledgerly-invoice-chasing:production`, and deployed the verified backend to `https://necessary-mammoth-771.convex.cloud`. Production function-spec readback succeeded and included Risk Radar functions. Temporary deploy keys used for deployment and verification were removed afterward.
+
+### 2026-09-22 - production release and authenticated verification
+Published the frontend at `https://invoice-chasing.vercel.app`, configured Clerk’s app-origin proxy and production Convex JWT integration, and verified the real sign-in flow through email, password, verification code, Convex authentication, dashboard loading, invoice creation, invoice editing, live updates, chase previews, and reply-intent classification. AgentMail delivery remains explicitly blocked until its production variables are configured.
