@@ -16,8 +16,9 @@ export default async function handler(request, response) {
       ? rawPath.join("/")
       : incomingUrl.searchParams.get("path") || "";
   const target = new URL(`${CLERK_FRONTEND_API}/${path}`);
-  const originalQuery = incomingUrl.searchParams.get("query");
-  if (originalQuery) target.search = originalQuery;
+  for (const [key, value] of incomingUrl.searchParams) {
+    if (key !== "path" && key !== "query") target.searchParams.append(key, value);
+  }
 
   const headers = new Headers();
   for (const [name, value] of Object.entries(request.headers)) {
