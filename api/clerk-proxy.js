@@ -8,14 +8,12 @@ export default async function handler(request, response) {
     return;
   }
 
-  const pathParts = Array.isArray(request.query.path)
-    ? request.query.path
-    : request.query.path
-      ? [request.query.path]
-      : [];
+  const path = Array.isArray(request.query.path)
+    ? request.query.path.join("/")
+    : String(request.query.path || "");
   const incomingUrl = new URL(request.url, `https://${request.headers.host}`);
-  const target = new URL(`${CLERK_FRONTEND_API}/${pathParts.map(encodeURIComponent).join("/")}`);
-  target.search = incomingUrl.search;
+  const target = new URL(`${CLERK_FRONTEND_API}/${path}`);
+  target.search = incomingUrl.searchParams.get("query") || "";
 
   const headers = new Headers();
   for (const [name, value] of Object.entries(request.headers)) {
@@ -32,16 +30,12 @@ export default async function handler(request, response) {
     method: request.method,
     headers,
     body: ["GET", "HEAD"].includes(request.method) ? undefined : request.body,
-    // Vercel's Node runtime needs streaming request bodies enabled for Clerk POSTs.
-    // @ts-expect-error Node fetch supports duplex for streamed request bodies.
     duplex: "half",
   });
 
   response.status(upstream.status);
   upstream.headers.forEach((value, name) => {
-    if (!['connection', 'content-length', 'transfer-encoding'].includes(name.toLowerCase())) {
-      response.setHeader(name, value);
-    }
+    if (!['connection', 'content-length', 'transfer-encoding'].includes(name.toLowerCase())) response.setHeader(name, value);
   });
   response.send(Buffer.from(await upstream.arrayBuffer()));
 }
