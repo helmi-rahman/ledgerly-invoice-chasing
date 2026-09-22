@@ -14,6 +14,7 @@ if (!convexUrl || (!import.meta.env.DEV && localConvexUrl.test(convexUrl))) {
 }
 const client = new ConvexReactClient(convexUrl);
 const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY?.trim();
+const clerkProxyUrl = import.meta.env.VITE_CLERK_PROXY_URL?.trim();
 // A browser-exposed Vite variable is suitable only for a local, user-managed
 // development token. Production uses Clerk's refreshed Convex JWT instead.
 const authToken = import.meta.env.DEV ? import.meta.env.VITE_CONVEX_AUTH_TOKEN?.trim() : undefined;
@@ -154,5 +155,5 @@ function ClerkAuthGate() {
 
 export default function Root() {
   const content = <ConvexProvider client={client}>{clerkPublishableKey ? <ClerkAuthGate /> : <LocalAuthGate />}</ConvexProvider>;
-  return clerkPublishableKey ? <ClerkProvider publishableKey={clerkPublishableKey}>{content}</ClerkProvider> : content;
+  return clerkPublishableKey ? <ClerkProvider publishableKey={clerkPublishableKey} {...(clerkProxyUrl ? { proxyUrl: clerkProxyUrl } : {})}>{content}</ClerkProvider> : content;
 }
