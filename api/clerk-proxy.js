@@ -1,4 +1,4 @@
-const PROXY_URL = "https://invoice-chasing.vercel.app/__clerk";
+const PROXY_URL = "https://invoice-chasing.vercel.app/__clerk/";
 const CLERK_FRONTEND_API = "https://frontend-api.clerk.dev";
 
 export default async function handler(request, response) {
