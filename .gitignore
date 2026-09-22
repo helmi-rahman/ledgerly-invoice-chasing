@@ -1,0 +1,12 @@
+
+.env.local
+
+# Dependencies and generated output
+node_modules/
+dist/
+.convex/
+*.tsbuildinfo
+
+# Local tooling and logs
+.hermes/
+*.log
