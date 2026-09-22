@@ -6,6 +6,7 @@ import {
   parseReplyIntent,
   summarizeAccountHealth,
   validatePaymentPlan,
+  type ReplyClassification,
 } from "../shared/invoiceIntelligence";
 
 const intent = v.union(v.literal("promise_to_pay"), v.literal("dispute"), v.literal("question"), v.literal("ignore"));
@@ -33,7 +34,12 @@ export const classifyPreview = query({
   returns: classification,
   handler: async (ctx, args) => {
     await requireIdentity(ctx);
-    return parseReplyIntent(args.text);
+    const result = parseReplyIntent(args.text);
+    if (result.source === "fallback" && result.intent !== "ignore") {
+      const localResult: ReplyClassification = { ...result, source: "local", errors: [] };
+      return localResult;
+    }
+    return result;
   },
 });
 

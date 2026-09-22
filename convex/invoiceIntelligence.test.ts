@@ -37,7 +37,7 @@ describe("deterministic invoice intelligence contract", () => {
     await expect(t.query(api.invoiceIntelligence.paymentPlanPreview, { issueDate: "2026-08-01", installments: 2, cadence: "monthly", nextDueDate: "2026-09-01", amountCents: 100 })).rejects.toThrow("Unauthenticated");
     await expect(t.query(api.invoiceIntelligence.accountHealthPreview, { asOfDate: "2026-08-20" })).rejects.toThrow("Unauthenticated");
     await expect(t.query(api.invoiceIntelligence.draftPreview, { invoiceId: "j5723g6q7n9m3x8z4s5f6h7j8k9l0m1n" as never, asOfDate: "2026-08-20" })).rejects.toThrow();
-    expect(await t.withIdentity(alice).query(api.invoiceIntelligence.classifyPreview, { text: "What is the balance?" })).toMatchObject({ intent: "question", source: "fallback" });
+    expect(await t.withIdentity(alice).query(api.invoiceIntelligence.classifyPreview, { text: "What is the balance?" })).toMatchObject({ intent: "question", source: "local" });
     const invoice = { clientName: "Alice Co.", clientEmail: "alice@example.com", invoiceNumber: "ALICE-1", amountCents: 1001, currency: "USD", issueDate: "2026-08-01", dueDate: "2026-08-19", status: "sent" as const };
     await t.withIdentity(alice).mutation(api.invoices.create, invoice);
     const bob = { subject: "bob", org_id: "tenant-b" };
