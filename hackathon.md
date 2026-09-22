@@ -4,9 +4,9 @@
 - **Event:** Convex All Gas Hackathon
 - **What it does:** Authenticated accounts-receivable workspace for creating, tracking, and updating invoices, with deterministic payment-chase previews, reply-intent classification, account-health summaries, and an optional provider-backed reminder flow.
 - **Live app:** not deployed
-- **Repo:** none
+- **Repo:** https://github.com/helmi-rahman/ledgerly-invoice-chasing
 - **Frontend:** not deployed
-- **Convex deployment:** not deployed
+- **Convex deployment:** https://quiet-orca-611.convex.cloud (production backend deployed; authenticated frontend flow pending)
 - **Components:** none
 - **Convex features:** schema, tables, indexes, queries, mutations, actions, HTTP actions, realtime subscriptions
 - **Auth:** Clerk production path with a local JWT development gate
@@ -64,13 +64,16 @@ The documented Firecrawl v2 seam is `POST https://api.firecrawl.dev/v2/search` w
 
 ## Current state and known gaps
 
-- Current implementation is **AgentMail-heavy**: outbound reminders and inbound signed webhook processing are core product paths. Collections Risk Radar is now a proposed Firecrawl scope addition; it is not implemented or live-verified yet.
+- Current implementation is **AgentMail-heavy**: outbound reminders and inbound signed webhook processing are core product paths. Collections Risk Radar has deterministic backend/frontend paths implemented and locally verified; Firecrawl-backed evidence retrieval remains optional and is not live-verified.
 
-- The project is **not publicly deployed**. No public frontend URL or Convex cloud deployment URL is recorded in the workspace.
-- The local verification baseline is now reproducible: `npx tsc --noEmit` passed with no errors; `npm run test:once` passed with 4 files and 29 tests; `npm run build` passed with the Vite production bundle; and `CONVEX_AGENT_MODE=anonymous npx convex dev --once` reported Convex functions ready at the local anonymous deployment. The local Convex run used no Convex account and is not a production-deployment claim.
-- Production use still requires Clerk configuration, a Convex deployment auth issuer/JWT template, hosting environment variables, AgentMail/Svix configuration, provider credentials, and authenticated live end-to-end verification.
+- The production Convex backend is deployed at `https://quiet-orca-611.convex.cloud`. The public frontend is not deployed yet, and authenticated production end-to-end verification remains pending.
+- The local verification baseline is reproducible: `npx tsc --noEmit` passed with no errors; `npm run test:once` passed with 4 files and 29 tests; `npm run build` passed with the Vite production bundle; and `CONVEX_AGENT_MODE=anonymous npx convex dev --once` reported Convex functions ready at the local anonymous deployment. The local Convex run used no Convex account and is not a production-deployment claim.
+- Production use still requires Clerk configuration, hosting environment variables, AgentMail/Svix configuration, provider credentials, and authenticated live end-to-end verification.
 - Deterministic local previews are the current safe baseline. Provider-backed AI and outbound email are optional runtime paths and must not be treated as live merely because their code exists.
-- This file is an evidence-based build log, not a deployment or hackathon-submission claim.
+- This file is an evidence-based build log, not a hackathon-submission claim.
 
 ### 2026-09-22 - risk-radar backend verification blocker resolved
 The local Convex push initially exposed a missing `@types/node` dependency for the `RISK_RADAR_ALLOWED_HOSTS` environment-variable access in `convex/riskRadar.ts` and its tests. Added the development type dependency and declared Node types in `convex/tsconfig.json`. Verified that `CONVEX_AGENT_MODE=anonymous npx convex dev --once` now completes with `Convex functions ready`, all 29 tests pass, and the production Vite build passes. Exercised the live local `riskRadar:dashboard` HTTP endpoint and confirmed unauthenticated access is rejected by the backend; no production deployment or external Firecrawl call was claimed.
+
+### 2026-09-22 - Convex production deployment
+Linked the project to Convex account `helmiabdm`, created production deployment `helmiabdm:ledgerly-invoice-chasing:production`, and deployed the verified backend to `https://quiet-orca-611.convex.cloud`. Production function-spec readback succeeded and included Risk Radar functions. Temporary deploy keys used for deployment and verification were removed afterward. Clerk, frontend hosting, AgentMail/Svix configuration and authenticated production verification remain pending.
