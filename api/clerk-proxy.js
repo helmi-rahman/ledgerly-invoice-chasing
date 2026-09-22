@@ -8,12 +8,16 @@ export default async function handler(request, response) {
     return;
   }
 
-  const path = Array.isArray(request.query.path)
-    ? request.query.path.join("/")
-    : String(request.query.path || "");
   const incomingUrl = new URL(request.url, `https://${request.headers.host}`);
+  const rawPath = request.query?.path;
+  const path = typeof rawPath === "string"
+    ? rawPath
+    : Array.isArray(rawPath) && rawPath.every((item) => typeof item === "string")
+      ? rawPath.join("/")
+      : incomingUrl.searchParams.get("path") || "";
   const target = new URL(`${CLERK_FRONTEND_API}/${path}`);
-  target.search = incomingUrl.searchParams.get("query") || "";
+  const originalQuery = incomingUrl.searchParams.get("query");
+  if (originalQuery) target.search = originalQuery;
 
   const headers = new Headers();
   for (const [name, value] of Object.entries(request.headers)) {
@@ -28,10 +32,15 @@ export default async function handler(request, response) {
   if (typeof forwardedFor === "string") headers.set("X-Forwarded-For", forwardedFor);
   else if (Array.isArray(forwardedFor) && typeof forwardedFor[0] === "string") headers.set("X-Forwarded-For", forwardedFor[0]);
 
+  let body;
+  if (!["GET", "HEAD"].includes(request.method)) {
+    if (typeof request.body === "string" || request.body instanceof Uint8Array || request.body instanceof ArrayBuffer) body = request.body;
+    else if (request.body && typeof request.body === "object") body = new URLSearchParams(request.body).toString();
+  }
   const upstream = await fetch(target, {
     method: request.method,
     headers,
-    body: ["GET", "HEAD"].includes(request.method) ? undefined : request.body,
+    body,
     duplex: "half",
   });
 
