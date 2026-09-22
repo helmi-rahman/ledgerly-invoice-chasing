@@ -13,10 +13,20 @@ export default async function handler(request, response) {
     else if (Array.isArray(value) && value.every((item) => typeof item === "string")) headers.set(name, value.join(", "));
   }
 
+  let body;
+  if (!["GET", "HEAD"].includes(request.method)) {
+    const parsedBody = request.body;
+    if (typeof parsedBody === "string" || Buffer.isBuffer(parsedBody) || parsedBody instanceof Uint8Array) body = parsedBody;
+    else if (parsedBody && typeof parsedBody === "object") {
+      body = headers.get("content-type")?.includes("application/json")
+        ? JSON.stringify(parsedBody)
+        : new URLSearchParams(parsedBody).toString();
+    } else body = request;
+  }
   const webRequest = new Request(url, {
     method: request.method,
     headers,
-    body: ["GET", "HEAD"].includes(request.method) ? undefined : request,
+    body,
     // @ts-expect-error Node's IncomingMessage is an async iterable request body.
     duplex: "half",
   });
