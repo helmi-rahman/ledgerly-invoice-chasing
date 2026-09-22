@@ -2,7 +2,8 @@
 
 - **Project:** Ledgerly / Invoice Chasing
 - **Event:** Convex All Gas Hackathon
-- **What it does:** Authenticated accounts-receivable workspace for creating, tracking, and updating invoices, with deterministic payment-chase previews, reply-intent classification, account-health summaries, and an optional provider-backed reminder flow.
+- **What it does:** Ledgerly turns unpaid invoices into controlled, evidence-backed follow-up—without letting an AI send money-related emails unchecked.
+- **Submission description:** Ledgerly is an authenticated accounts-receivable workspace for small teams. Create and track invoices, see overdue exposure and account health, generate deterministic payment-chase drafts in different tones, classify inbound replies, and require explicit approval before any reminder is sent. Convex handles the live backend and tenant isolation; Clerk secures access; provider-backed email is an optional final step rather than an autonomous default.
 - **Live app:** not deployed
 - **Repo:** https://github.com/helmi-rahman/ledgerly-invoice-chasing
 - **Frontend:** not deployed
