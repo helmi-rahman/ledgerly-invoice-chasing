@@ -1,5 +1,5 @@
 import { ConvexProvider, ConvexReactClient, useAction, useMutation, useQuery } from "convex/react";
-import { ClerkProvider, useAuth, useClerk } from "@clerk/clerk-react";
+import { ClerkProvider, useAuth, useClerk } from "@clerk/react";
 import { useEffect, useMemo, useState } from "react";
 import { api } from "../convex/_generated/api";
 import { displayStatus, INVOICE_STATUSES, type InvoiceDisplayStatus, type InvoiceStatus } from "../shared/invoiceStatus";
