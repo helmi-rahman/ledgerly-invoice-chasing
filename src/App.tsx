@@ -127,7 +127,7 @@ function LocalAuthGate() {
 
 function ClerkAuthGate() {
   const { isLoaded, isSignedIn, getToken } = useAuth();
-  const { openSignIn } = useClerk();
+  const { openSignIn, openSignUp } = useClerk();
   const [state, setState] = useState<"checking" | "ready" | "signed-out" | "invalid">("checking");
 
   useEffect(() => {
@@ -149,7 +149,7 @@ function ClerkAuthGate() {
   const message = state === "invalid"
     ? "Your sign-in could not be verified by Convex. Check the Clerk Convex JWT template and try again."
     : "Sign in with your workspace account to continue.";
-  return <main className="auth-gate"><section className="card"><p className="eyebrow">LEDGERLY ACCESS</p><h1>{state === "checking" ? "Checking access…" : "Sign in to continue"}</h1><p className="sub">{message}</p>{state === "signed-out" && <button className="primary" onClick={() => void openSignIn()}>Sign in</button>}{state === "invalid" && <p className="auth-help">Your session may have expired. Sign in again after checking the configured Clerk issuer and Convex JWT template.</p>}</section></main>;
+  return <main className="auth-gate"><section className="card"><p className="eyebrow">LEDGERLY ACCESS</p><h1>{state === "checking" ? "Checking access…" : "Sign in to continue"}</h1><p className="sub">{message}</p>{state === "signed-out" && <div className="auth-actions"><button className="primary" onClick={() => void openSignIn()}>Sign in</button><button className="secondary" onClick={() => void openSignUp()}>Create account</button></div>}{state === "invalid" && <p className="auth-help">Your session may have expired. Sign in again after checking the configured Clerk issuer and Convex JWT template.</p>}</section></main>;
 }
 
 export default function Root() {
