@@ -13,6 +13,7 @@ export default async function handler(request, response) {
     else if (Array.isArray(value) && value.every((item) => typeof item === "string")) headers.set(name, value.join(", "));
   }
 
+  if (!headers.has("origin")) headers.set("Origin", `${protocol}://${host}`);
   let body;
   if (!["GET", "HEAD"].includes(request.method)) {
     const parsedBody = request.body;
