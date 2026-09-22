@@ -21,6 +21,7 @@ export default async function handler(request, response) {
       headers.set(name, Array.isArray(value) ? value.join(", ") : value);
     }
   }
+  headers.delete("accept-encoding");
   headers.set("Clerk-Proxy-Url", PROXY_URL);
   headers.set("Clerk-Secret-Key", secretKey);
   const forwardedFor = request.headers["x-forwarded-for"] || request.headers["x-real-ip"] || "";
