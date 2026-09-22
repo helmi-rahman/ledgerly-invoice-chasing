@@ -46,7 +46,12 @@ export default async function handler(request, response) {
 
   response.status(proxied.status);
   proxied.headers.forEach((value, name) => {
+    if (name.toLowerCase() === "set-cookie") return;
     if (!["connection", "content-length", "transfer-encoding"].includes(name.toLowerCase())) response.setHeader(name, value);
   });
+  const setCookies = typeof proxied.headers.getSetCookie === "function"
+    ? proxied.headers.getSetCookie()
+    : [];
+  if (setCookies.length) response.setHeader("set-cookie", setCookies);
   response.send(Buffer.from(await proxied.arrayBuffer()));
 }
