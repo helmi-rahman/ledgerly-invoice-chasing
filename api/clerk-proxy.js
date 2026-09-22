@@ -17,15 +17,16 @@ export default async function handler(request, response) {
 
   const headers = new Headers();
   for (const [name, value] of Object.entries(request.headers)) {
-    if (name.toLowerCase() !== "host" && name.toLowerCase() !== "content-length") {
-      headers.set(name, Array.isArray(value) ? value.join(", ") : value);
-    }
+    if (name.toLowerCase() === "host" || name.toLowerCase() === "content-length") continue;
+    if (typeof value === "string") headers.set(name, value);
+    else if (Array.isArray(value) && value.every((item) => typeof item === "string")) headers.set(name, value.join(", "));
   }
   headers.set("Accept-Encoding", "identity");
   headers.set("Clerk-Proxy-Url", PROXY_URL);
   headers.set("Clerk-Secret-Key", secretKey);
-  const forwardedFor = request.headers["x-forwarded-for"] || request.headers["x-real-ip"] || "";
-  if (forwardedFor) headers.set("X-Forwarded-For", Array.isArray(forwardedFor) ? forwardedFor[0] : forwardedFor);
+  const forwardedFor = request.headers["x-forwarded-for"] || request.headers["x-real-ip"];
+  if (typeof forwardedFor === "string") headers.set("X-Forwarded-For", forwardedFor);
+  else if (Array.isArray(forwardedFor) && typeof forwardedFor[0] === "string") headers.set("X-Forwarded-For", forwardedFor[0]);
 
   const upstream = await fetch(target, {
     method: request.method,
