@@ -133,7 +133,8 @@ function ClerkAuthGate() {
   useEffect(() => {
     if (!isLoaded) return;
     if (!isSignedIn) {
-      void client.setAuth(async () => null, () => setState("signed-out"));
+      client.setAuth(async () => null);
+      setState("signed-out");
       return;
     }
     let cancelled = false;
