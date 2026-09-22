@@ -6,6 +6,9 @@ export default async function handler(request, response) {
   const protocol = request.headers["x-forwarded-proto"] || "https";
   const host = request.headers.host;
   const url = new URL(request.url, `${protocol}://${host}`);
+  // Vercel uses these query parameters internally for the rewrite; Clerk must not receive them.
+  url.searchParams.delete("path");
+  url.searchParams.delete("query");
   const headers = new Headers();
   for (const [name, value] of Object.entries(request.headers)) {
     if (name.toLowerCase() === "host" || name.toLowerCase() === "content-length") continue;
